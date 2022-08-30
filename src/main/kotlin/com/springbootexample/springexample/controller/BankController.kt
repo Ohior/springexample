@@ -1,7 +1,25 @@
 package com.springbootexample.springexample.controller
 
-import org.springframework.web.bind.annotation.RestController
+import com.springbootexample.springexample.models.Bank
+import com.springbootexample.springexample.service.BankService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @RestController
-class BankController {
+@RequestMapping("/api/banks")
+class BankController(private val service: BankService) {
+
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNotFound(e: NoSuchElementException): ResponseEntity<String> =
+        ResponseEntity(e.message, HttpStatus.NOT_FOUND)
+
+    @ExceptionHandler(NullPointerException::class)
+    fun handleNull(e: NullPointerException): ResponseEntity<String> = ResponseEntity(e.message, HttpStatus.NOT_FOUND)
+
+    @GetMapping
+    fun getBanks(): Collection<Bank> = service.getBanks()
+
+    @GetMapping("/{accountNumber}")
+    fun getBank(@PathVariable accountNumber: String): Bank = service.getBank(accountNumber)
 }

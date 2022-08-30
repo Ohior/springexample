@@ -3,6 +3,7 @@ package com.springbootexample.springexample.datasource.mock
 import com.springbootexample.springexample.datasource.BankDataSource
 import com.springbootexample.springexample.models.Bank
 import org.springframework.stereotype.Repository
+import java.lang.NullPointerException
 
 @Repository
 class MockBankDataSource:BankDataSource {
@@ -13,5 +14,7 @@ class MockBankDataSource:BankDataSource {
     )
 
     override fun retrieveBanks(): Collection<Bank>  = banks
+    override fun retrieveBank(accountNumber: String): Bank = banks.find { it.accountNumber == accountNumber }
+        ?:throw NullPointerException("Could not find bank with the account number with $accountNumber")
 
 }
